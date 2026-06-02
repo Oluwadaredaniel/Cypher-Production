@@ -1,0 +1,83 @@
+name: Official Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+      - name: Build APK
+        run: |
+          cd mobile
+          flutter pub get
+          flutter build apk --release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+      - name: Build Windows
+        run: |
+          cd pc
+          flutter pub get
+          flutter build windows --release
+      - name: Zip Windows Build
+        run: |
+          Compress-Archive -Path pc/build/windows/x64/runner/Release/* -DestinationPath cypher-windows-x64.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: cypher-windows-x64.zip
+
+  create-release:
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app-release.apk
+            cypher-windows-x64.zip
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

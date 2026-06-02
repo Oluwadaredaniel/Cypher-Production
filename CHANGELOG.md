@@ -1,27 +1,30 @@
 ﻿# Changelog
 
-All notable changes to CYPHER will be documented in this file.
+All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.0.0] - 2024-06-03
 
-### Added
-- Initial core features
-- File transfer (both directions)
-- Remote control (power, media, keyboard, mouse)
-- System monitoring
-- Activity logging
-- Pairing system
+### Initial Production Release
 
-### Changed
-- N/A
+#### Added
+- **Instant Local Discovery**: Auto-find PC on the network using mDNS.
+- **Secure 6-Digit Pairing**: Handshake with cryptographically secure tokens.
+- **Unified Activity Log**: Real-time audit of every command and connection.
+- **Remote Control**: Shutdown, restart, sleep, and workstation lock.
+- **App Launcher**: List and launch Windows apps from the phone.
+- **Process Manager**: Monitor and kill PC processes.
+- **Bidirectional File Transfer**: Local streaming for any file size.
+- **Clipboard Sync**: Two-way text sync between PC and phone.
+- **Guest Access**: QR-code based temporary sharing with web and app UI.
+- **Live Monitoring**: CPU/RAM usage graphs and battery status.
 
-### Fixed
-- N/A
+#### Visuals
+- Premium Dark Theme across all platforms.
+- Animated Splash screens and Onboarding flows.
+- Connection Lost recovery screens.
 
-### Security
-- N/A
-
-## [1.0.0] - 2026-06-15
-
-### Added
-- Initial release
+#### Technical
+- Python Flask + Socket.IO Backend.
+- Flutter Mobile (Android/iOS) and Desktop (Windows) apps.
+- Daily rotating structured JSON logging.
+- Sentry integration for error tracking.
