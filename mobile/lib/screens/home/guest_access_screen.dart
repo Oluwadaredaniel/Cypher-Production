@@ -18,13 +18,11 @@ class GuestAccessScreen extends StatefulWidget {
 
 class _GuestAccessScreenState extends State<GuestAccessScreen> {
   String? _qrData;
+  String? _webLink;
   bool _isScanning = false;
   String _selectedFolderPath = 'Downloads (Default)';
 
   Future<void> _pickFolder() async {
-    // In a real PC-remote scenario, we would use our own file browser to pick a PC folder.
-    // For now, we'll allow entering a path or just use a placeholder.
-    // Let's assume the user wants to share their PC's Downloads.
     setState(() => _selectedFolderPath = 'C:\\Users\\hp\\Downloads');
   }
 
@@ -34,7 +32,10 @@ class _GuestAccessScreenState extends State<GuestAccessScreen> {
         'folders': [_selectedFolderPath == 'Downloads (Default)' ? r'C:\Users\hp\Downloads' : _selectedFolderPath],
         'duration': 15
       });
-      setState(() => _qrData = res['qr_data']);
+      setState(() {
+        _qrData = res['qr_data'];
+        _webLink = res['web_link'];
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -132,6 +133,29 @@ class _GuestAccessScreenState extends State<GuestAccessScreen> {
         const Text('GUEST ACCESS READY', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 2)),
         const SizedBox(height: 8),
         const Text('Valid for 15 minutes', style: TextStyle(color: CypherColors.warning)),
+        const SizedBox(height: 24),
+        if (_webLink != null)
+          GestureDetector(
+            onTap: () {
+              // Copy to clipboard
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Web link copied!')));
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: CypherColors.tertiaryBackground,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.link, size: 16, color: CypherColors.primary),
+                  const SizedBox(width: 8),
+                  Text(_webLink!.split('/').last, style: const TextStyle(fontSize: 12, color: CypherColors.secondaryText)),
+                ],
+              ),
+            ),
+          ),
         const SizedBox(height: 48),
         CustomButton(text: 'Stop Sharing', onPressed: () => setState(() => _qrData = null), backgroundColor: CypherColors.tertiaryBackground),
       ],

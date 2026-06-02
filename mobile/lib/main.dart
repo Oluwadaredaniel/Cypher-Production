@@ -13,18 +13,27 @@ import 'screens/splash_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Logging
+  // 1. Setup Structured Logging
   final logger = LoggingService();
-  logger.info('Starting CYPHER Mobile - Production Grade');
+  logger.info('Initializing Cypher Production Mobile...');
 
+  // 2. Setup Persistent Storage
   final storage = await StorageService.init();
+
+  // 3. Initialize API Service
   final api = ApiService();
 
-  // Initialize Sentry for Error Tracking & Analytics
+  // 4. Initialize Production Monitoring (Sentry)
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://example@sentry.io/123';
-      options.tracesSampleRate = 1.0;
+      options.environment = 'production';
+      options.release = '1.0.0+1';
+      options.tracesSampleRate = 0.1;
+      options.beforeSend = (event, hint) async {
+        event.request?.headers?.remove('X-Auth-Token');
+        return event;
+      };
     },
     appRunner: () => runApp(
       MultiProvider(

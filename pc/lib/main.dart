@@ -5,7 +5,7 @@ import 'core/theme/cypher_theme.dart';
 import 'providers/system_provider.dart';
 import 'services/api_service.dart';
 import 'services/logging_service.dart';
-import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/dashboard/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +54,7 @@ class CypherPCApp extends StatelessWidget {
       title: 'CYPHER',
       debugShowCheckedModeBanner: false,
       theme: CypherTheme.darkTheme,
-      home: const DashboardScreen(),
+      home: const PCSplashScreen(),
     );
   }
 }

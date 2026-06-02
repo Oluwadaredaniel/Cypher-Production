@@ -532,6 +532,20 @@ def guest_web_landing():
     if not session:
         return "<h1>Link Expired or Invalid</h1>", 401
 
+    # Generate list of files for the web UI
+    files_html = ""
+    for folder in session.allowed_folders:
+        p = Path(folder)
+        if p.exists():
+            for item in p.iterdir():
+                if item.name.startswith(('.', '$')): continue
+                files_html += f"""
+                <div class="file-item">
+                    <span>{item.name}</span>
+                    <a href="/guest/files/download?token={token}&path={item.absolute()}" class="btn" style="text-decoration:none; font-size:12px;">Download</a>
+                </div>
+                """
+
     html = f"""
     <!DOCTYPE html>
     <html>
@@ -539,28 +553,34 @@ def guest_web_landing():
         <title>Cypher Guest Access</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-            body {{ font-family: sans-serif; background: #0F0F10; color: white; padding: 20px; }}
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0F0F10; color: white; padding: 20px; }}
             .container {{ max-width: 600px; margin: 0 auto; }}
-            .card {{ background: #16161A; padding: 20px; border-radius: 12px; margin-bottom: 10px; }}
-            .btn {{ background: #10B981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }}
-            .file-item {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #262626; padding: 10px 0; }}
+            .card {{ background: #16161A; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #262626; }}
+            .btn {{ background: #10B981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }}
+            .btn-secondary {{ background: #1E1E26; color: #A0A0A0; }}
+            .file-item {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #262626; padding: 12px 0; }}
+            h1 {{ font-weight: 800; letter-spacing: -1px; }}
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>Cypher Shared Space</h1>
-            <p>You have temporary access to this PC.</p>
+            <h1>Cypher <span style="color:#10B981">Guest</span></h1>
+            <p style="color:#A0A0A0">Temporary access to shared folders.</p>
+
             <div class="card">
-                <h3>Upload to PC</h3>
+                <h3 style="margin-top:0">Upload to PC</h3>
                 <form action="/guest/files/upload?token={token}" method="post" enctype="multipart/form-data">
-                    <input type="file" name="file">
-                    <button type="submit" class="btn">Upload</button>
+                    <input type="file" name="file" style="margin-bottom:10px; display:block;">
+                    <button type="submit" class="btn">Send to PC</button>
                 </form>
             </div>
-            <div id="file-list">
-                <h3>Available Files</h3>
-                <p>Use the Cypher App for a better experience or refresh to see updates.</p>
+
+            <div class="card">
+                <h3 style="margin-top:0">Available Files</h3>
+                {files_html if files_html else '<p style="color:#666">No files in shared folders.</p>'}
             </div>
+
+            <p style="text-align:center; font-size:12px; color:#444">Powered by Cypher Local Protocol</p>
         </div>
     </body>
     </html>
