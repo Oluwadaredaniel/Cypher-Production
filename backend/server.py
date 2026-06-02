@@ -31,6 +31,20 @@ from core.services.guest_manager import guest_manager
 from core.services.discovery import start_discovery_thread, get_discovery_instance
 from core.services.recording_overlay import overlay_manager
 
+# Initialize Sentry for Production Monitoring & Analytics
+try:
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(
+        dsn="https://example@sentry.io/123", # Replace with real DSN
+        integrations=[FlaskIntegration()],
+        traces_sample_rate=0.1,
+        environment="production",
+        release="1.0.0",
+    )
+except ImportError:
+    pass
+
 # Initialize Logging
 log = setup_logging('cypher-backend')
 
@@ -659,6 +673,8 @@ def add_notif():
 
 if __name__ == '__main__':
     load_persistence()
+    from core.services.utils import check_for_updates
+    threading.Thread(target=check_for_updates, daemon=True).start()
     threading.Thread(target=monitor_resources, daemon=True).start()
     start_discovery_thread(5000, socket.gethostname())
 

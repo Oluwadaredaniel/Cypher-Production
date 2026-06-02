@@ -19,6 +19,11 @@ jobs:
         run: |
           cd backend
           pip install -r requirements.txt
+          pip install pytest pytest-flask
+      - name: Run tests
+        run: |
+          cd backend
+          pytest tests/
       - name: Lint with flake8
         run: |
           pip install flake8

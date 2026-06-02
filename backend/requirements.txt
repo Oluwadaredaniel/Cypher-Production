@@ -16,3 +16,6 @@ comtypes
 requests
 packaging
 screeninfo
+pytest
+pytest-flask
+sentry-sdk
