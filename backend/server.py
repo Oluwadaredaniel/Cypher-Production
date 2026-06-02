@@ -519,8 +519,53 @@ def create_guest():
     data = request.json
     token = guest_manager.create_session(data['folders'], data.get('duration', 15), "host")
     ip = get_local_ip()
+    # Deep link for app users
     qr_data = f"cypher://{ip}:5000/guest?token={token}"
-    return jsonify({"success": True, "token": token, "qr_data": qr_data})
+    # Web link for non-app users
+    web_link = f"http://{ip}:5000/guest/access?token={token}"
+    return jsonify({"success": True, "token": token, "qr_data": qr_data, "web_link": web_link})
+
+@app.route('/guest/access')
+def guest_web_landing():
+    token = request.args.get('token')
+    session = guest_manager.validate_token(token)
+    if not session:
+        return "<h1>Link Expired or Invalid</h1>", 401
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Cypher Guest Access</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body {{ font-family: sans-serif; background: #0F0F10; color: white; padding: 20px; }}
+            .container {{ max-width: 600px; margin: 0 auto; }}
+            .card {{ background: #16161A; padding: 20px; border-radius: 12px; margin-bottom: 10px; }}
+            .btn {{ background: #10B981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }}
+            .file-item {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #262626; padding: 10px 0; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Cypher Shared Space</h1>
+            <p>You have temporary access to this PC.</p>
+            <div class="card">
+                <h3>Upload to PC</h3>
+                <form action="/guest/files/upload?token={token}" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file">
+                    <button type="submit" class="btn">Upload</button>
+                </form>
+            </div>
+            <div id="file-list">
+                <h3>Available Files</h3>
+                <p>Use the Cypher App for a better experience or refresh to see updates.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return html
 
 @app.route('/guest/files')
 def guest_files():
@@ -540,6 +585,39 @@ def guest_files():
     if not allowed: return jsonify({"error": "Denied"}), 403
 
     return browse() # Reuse browse logic
+
+@app.route('/guest/files/download')
+def guest_download():
+    token = request.args.get('token')
+    path = request.args.get('path')
+    session = guest_manager.validate_token(token)
+    if not session or not path: return jsonify({"error": "Unauthorized"}), 401
+
+    # Permission check
+    allowed = False
+    for f in session.allowed_folders:
+        if path.lower().startswith(f.lower()):
+            allowed = True; break
+    if not allowed: return jsonify({"error": "Denied"}), 403
+
+    return send_file(path, as_attachment=True)
+
+@app.route('/guest/files/upload', methods=['POST'])
+def guest_upload():
+    token = request.args.get('token')
+    session = guest_manager.validate_token(token)
+    if not session: return jsonify({"error": "Unauthorized"}), 401
+
+    if 'file' not in request.files: return jsonify({"error": "No file"}), 400
+    file = request.files['file']
+
+    dest = session.allowed_folders[0]
+    final_path = Path(dest) / file.filename
+    try:
+        file.save(str(final_path))
+        add_activity("Guest Upload", f"Received {file.filename} via guest link", category="Transfers")
+        return jsonify({"success": True})
+    except Exception as e: return jsonify({"error": str(e)}), 500
 
 # --- NOTIFICATIONS ---
 

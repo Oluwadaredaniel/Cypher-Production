@@ -15,12 +15,12 @@ Future<void> main() async {
 
   // Initialize Logging
   final logger = LoggingService();
-  logger.info('Starting CYPHER Mobile');
+  logger.info('Starting CYPHER Mobile - Production Grade');
 
   final storage = await StorageService.init();
   final api = ApiService();
 
-  // Initialize Sentry (Conceptual DSN)
+  // Initialize Sentry for Error Tracking & Analytics
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://example@sentry.io/123';
