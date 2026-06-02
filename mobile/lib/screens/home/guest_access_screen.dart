@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../core/constants/colors.dart';
 import '../../services/api_service.dart';
 import '../../widgets/custom_button.dart';
@@ -18,12 +19,19 @@ class GuestAccessScreen extends StatefulWidget {
 class _GuestAccessScreenState extends State<GuestAccessScreen> {
   String? _qrData;
   bool _isScanning = false;
+  String _selectedFolderPath = 'Downloads (Default)';
+
+  Future<void> _pickFolder() async {
+    // In a real PC-remote scenario, we would use our own file browser to pick a PC folder.
+    // For now, we'll allow entering a path or just use a placeholder.
+    // Let's assume the user wants to share their PC's Downloads.
+    setState(() => _selectedFolderPath = 'C:\\Users\\hp\\Downloads');
+  }
 
   Future<void> _generateGuestLink() async {
     try {
-      // 1. Show Folder Picker (Conceptual, using Downloads for now)
       final res = await context.read<ApiService>().post('/guest/create', body: {
-        'folders': [r'C:\Users\hp\Downloads'],
+        'folders': [_selectedFolderPath == 'Downloads (Default)' ? r'C:\Users\hp\Downloads' : _selectedFolderPath],
         'duration': 15
       });
       setState(() => _qrData = res['qr_data']);
