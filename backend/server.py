@@ -31,12 +31,12 @@ from core.services.guest_manager import guest_manager
 from core.services.discovery import start_discovery_thread, get_discovery_instance
 from core.services.recording_overlay import overlay_manager
 
-# Initialize Sentry for Production Monitoring & Analytics
+# Initialize GlitchTip for Production Monitoring (Sentry-compatible)
 try:
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
     sentry_sdk.init(
-        dsn="https://example@sentry.io/123", # Replace with real DSN
+        dsn="https://YOUR_GLITCHTIP_DSN", # Replace with GlitchTip DSN
         integrations=[FlaskIntegration()],
         traces_sample_rate=0.1,
         environment="production",
@@ -44,6 +44,17 @@ try:
     )
 except ImportError:
     pass
+
+# OneUptime Heartbeat Logic
+def oneuptime_heartbeat():
+    """Pings OneUptime every 5 minutes to track install/uptime."""
+    while True:
+        try:
+            # Replace with real OneUptime Heartbeat URL
+            requests.get("https://oneuptime.com/api/heartbeat/YOUR_ID", timeout=5)
+        except:
+            pass
+        time.sleep(300)
 
 # Initialize Logging
 log = setup_logging('cypher-backend')
@@ -675,6 +686,7 @@ if __name__ == '__main__':
     load_persistence()
     from core.services.utils import check_for_updates
     threading.Thread(target=check_for_updates, daemon=True).start()
+    threading.Thread(target=oneuptime_heartbeat, daemon=True).start()
     threading.Thread(target=monitor_resources, daemon=True).start()
     start_discovery_thread(5000, socket.gethostname())
 

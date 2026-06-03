@@ -23,10 +23,10 @@ Future<void> main() async {
   // 3. Initialize API Service
   final api = ApiService();
 
-  // 4. Initialize Production Monitoring (Sentry)
+  // 4. Initialize Production Monitoring (GlitchTip - Sentry-compatible)
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://example@sentry.io/123';
+      options.dsn = 'https://YOUR_GLITCHTIP_DSN'; // Replace with GlitchTip DSN
       options.environment = 'production';
       options.release = '1.0.0+1';
       options.tracesSampleRate = 0.1;
