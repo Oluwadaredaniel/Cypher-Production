@@ -27,18 +27,27 @@ class _FileBrowserScreenState extends State<FileBrowserScreen> {
     try {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloading $name...')));
       final api = context.read<ApiService>();
-      // Use manual HTTP for streaming/downloading large files if needed
-      await api.get('/files/download', queryParams: {'path': path});
+      final bytes = await api.get('/files/download', queryParams: {'path': path}, isBinary: true);
 
       final directory = await getExternalStorageDirectory();
       if (directory == null) return;
 
       final file = io.File('${directory.path}/$name');
-      // await file.writeAsBytes(response); // If get() returns bytes
+      await file.writeAsBytes(bytes);
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloaded to: ${file.path}'), backgroundColor: CypherColors.success));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Downloaded to: ${file.path}'),
+          backgroundColor: CypherColors.success,
+        ));
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: CypherColors.error));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: CypherColors.error,
+        ));
+      }
     }
   }
 

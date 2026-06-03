@@ -73,32 +73,24 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              'Connected to PC',
-                              style: TextStyle(color: CypherColors.secondaryText, fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              auth.deviceName ?? 'Desktop-PC',
-                              style: const TextStyle(color: CypherColors.primaryText, fontSize: 24, fontWeight: FontWeight.w700),
+                              'CONNECTED TO',
+                              style: TextStyle(color: CypherColors.primary, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              stats?['pc_ip'] ?? '192.168.1.10',
-                              style: const TextStyle(color: CypherColors.tertiaryText, fontSize: 14),
+                              auth.deviceName ?? 'Desktop-PC',
+                              style: const TextStyle(color: CypherColors.primaryText, fontSize: 22, fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              stats?['pc_ip'] ?? 'Scanning...',
+                              style: const TextStyle(color: CypherColors.secondaryText, fontSize: 13),
                             ),
                           ],
                         ),
                       ),
                       if (stats?['battery_percent'] != null)
-                        Column(
-                          children: [
-                            Icon(
-                              stats!['battery_plugged'] ? Icons.battery_charging_full : Icons.battery_full,
-                              color: (stats['battery_percent'] as int) < 20 ? CypherColors.error : CypherColors.success,
-                            ),
-                            Text('${stats['battery_percent']}%', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+                        _buildBatteryIndicator(stats!['battery_percent'], stats['battery_plugged']),
                     ],
                   ),
                 ),
@@ -213,6 +205,38 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
         ],
       ),
+    );
+  }
+
+  Widget _buildBatteryIndicator(int percent, bool isPlugged) {
+    IconData icon;
+    Color color;
+
+    if (isPlugged) {
+      icon = Icons.battery_charging_full_rounded;
+      color = CypherColors.success;
+    } else {
+      if (percent < 20) {
+        icon = Icons.battery_alert_rounded;
+        color = CypherColors.error;
+      } else {
+        icon = Icons.battery_full_rounded;
+        color = CypherColors.primary;
+      }
+    }
+
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 24),
+        Text(
+          '$percent%',
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
     );
   }
 }

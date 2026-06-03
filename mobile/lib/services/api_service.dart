@@ -17,7 +17,7 @@ class ApiService {
         if (_token != null) 'X-Auth-Token': _token!,
       };
 
-  Future<dynamic> get(String endpoint, {Map<String, String>? queryParams}) async {
+  Future<dynamic> get(String endpoint, {Map<String, String>? queryParams, bool isBinary = false}) async {
     if (_baseUrl == null) throw Exception('Base URL not set');
 
     final uri = Uri.parse('$_baseUrl$endpoint').replace(queryParameters: queryParams);
@@ -25,6 +25,13 @@ class ApiService {
 
     try {
       final response = await http.get(uri, headers: _headers);
+      if (isBinary) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          return response.bodyBytes;
+        } else {
+          throw HttpException('Download Error: ${response.statusCode}');
+        }
+      }
       return _handleResponse(response);
     } catch (e) {
       _logger.e('GET Error: $e');
