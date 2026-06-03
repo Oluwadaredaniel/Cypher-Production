@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../services/api_service.dart';
 
 class FileProvider extends ChangeNotifier {
@@ -21,6 +22,12 @@ class FileProvider extends ChangeNotifier {
   Future<void> browse(String? path) async {
     _isLoading = true;
     notifyListeners();
+
+    Sentry.addBreadcrumb(Breadcrumb(
+      message: 'Browsing path: $path',
+      category: 'file.browse',
+      level: SentryLevel.info,
+    ));
 
     try {
       if (path == null || path.isEmpty) {
