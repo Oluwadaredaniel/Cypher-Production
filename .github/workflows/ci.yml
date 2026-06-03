@@ -23,8 +23,7 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          export PYTHONPATH=$PYTHONPATH:$(pwd)
-          pytest tests/
+          python -m pytest tests/
       - name: Lint with flake8
         run: |
           pip install flake8

@@ -50,8 +50,7 @@ def oneuptime_heartbeat():
     """Pings OneUptime every 5 minutes to track install/uptime."""
     while True:
         try:
-            # Replace with real OneUptime Heartbeat URL
-            requests.get("https://oneuptime.com/api/heartbeat/YOUR_ID", timeout=5)
+            requests.get("https://oneuptime.com/heartbeat/e586d700-f543-4184-8764-6529ab707d46", timeout=5)
         except:
             pass
         time.sleep(300)
@@ -219,7 +218,7 @@ def generate_pairing_code():
     return pairing_code
 
 def load_persistence():
-    global paired_devices, valid_tokens
+    global paired_devices
     if PAIRED_DEVICES_FILE.exists():
         try:
             with open(PAIRED_DEVICES_FILE, 'r') as f:
@@ -503,7 +502,6 @@ def handle_clipboard():
 # --- SCREEN RECORDING ---
 
 def recording_worker(path):
-    global recording_state
     _load_media_engine()
     with mss.mss() as sct:
         mon = sct.monitors[1]
