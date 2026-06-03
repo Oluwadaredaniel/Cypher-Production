@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -33,7 +33,7 @@ class _FileBrowserScreenState extends State<FileBrowserScreen> {
       final directory = await getExternalStorageDirectory();
       if (directory == null) return;
 
-      final file = File('${directory.path}/$name');
+      final file = io.File('${directory.path}/$name');
       // await file.writeAsBytes(response); // If get() returns bytes
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloaded to: ${file.path}'), backgroundColor: CypherColors.success));

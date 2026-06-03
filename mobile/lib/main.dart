@@ -31,8 +31,9 @@ Future<void> main() async {
       options.release = '1.0.0+1';
       options.tracesSampleRate = 0.1;
       options.beforeSend = (event, {hint}) {
-        if (event.request != null) {
-          event.request!.headers?.remove('X-Auth-Token');
+        final request = event.request;
+        if (request != null) {
+          request.headers?.remove('X-Auth-Token');
         }
         return event;
       };

@@ -5,7 +5,7 @@ class UsageGraph extends StatelessWidget {
   final List<double> values;
   final Color color;
 
-  const UsageGraph({super.key, required this.values, required this.color});
+  UsageGraph({super.key, required this.values, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,9 @@ class UsageGraph extends StatelessWidget {
 
     return LineChart(
       LineChartData(
-        gridData: const FlGridData(show: false),
-        titlesData: const FlTitlesData(show: false),
-        borderData: const FlBorderData(show: false),
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(show: false),
+        borderData: FlBorderData(show: false),
         minX: 0,
         maxX: 30, // Show last 30 points
         minY: 0,
@@ -27,7 +27,7 @@ class UsageGraph extends StatelessWidget {
             color: color,
             barWidth: 2,
             isStrokeCapRound: true,
-            dotData: const FlDotData(show: false),
+            dotData: FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
               color: color.withOpacity(0.05),
