@@ -36,7 +36,7 @@ try:
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
     sentry_sdk.init(
-        dsn="https://YOUR_GLITCHTIP_DSN", # Replace with GlitchTip DSN
+        dsn="https://011915baf51240f19f98c283a67fece4@app.glitchtip.com/24279",
         integrations=[FlaskIntegration()],
         traces_sample_rate=0.1,
         environment="production",

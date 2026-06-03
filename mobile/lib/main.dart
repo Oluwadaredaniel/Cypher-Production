@@ -26,7 +26,7 @@ Future<void> main() async {
   // 4. Initialize Production Monitoring (GlitchTip - Sentry-compatible)
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://YOUR_GLITCHTIP_DSN'; // Replace with GlitchTip DSN
+      options.dsn = 'https://011915baf51240f19f98c283a67fece4@app.glitchtip.com/24279';
       options.environment = 'production';
       options.release = '1.0.0+1';
       options.tracesSampleRate = 0.1;
