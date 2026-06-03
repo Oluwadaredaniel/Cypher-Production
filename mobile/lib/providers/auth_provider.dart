@@ -44,6 +44,7 @@ class AuthProvider extends ChangeNotifier {
           name: name,
         );
         _api.updateConfig(ip, token);
+        // Socket initialization happens via SystemProvider
         _isPaired = true;
         _deviceName = name;
         notifyListeners();

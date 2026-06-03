@@ -26,14 +26,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SystemProvider>().startMonitoring();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final system = context.watch<SystemProvider>();
     final auth = context.watch<AuthProvider>();

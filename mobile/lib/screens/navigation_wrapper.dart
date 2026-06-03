@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../core/constants/colors.dart';
+import '../providers/auth_provider.dart';
+import '../providers/system_provider.dart';
+import '../services/storage_service.dart';
 import 'home/home_screen.dart';
 import 'files/file_browser_screen.dart';
 import 'controls/controls_screen.dart';
@@ -14,6 +17,21 @@ class NavigationWrapper extends StatefulWidget {
 
 class _NavigationWrapperState extends State<NavigationWrapper> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final storage = context.read<StorageService>();
+      if (storage.isPaired) {
+        context.read<SystemProvider>().startMonitoring(
+          storage.pcIp!,
+          storage.authToken!,
+          context,
+        );
+      }
+    });
+  }
 
   final List<Widget> _screens = [
     const HomeScreen(),

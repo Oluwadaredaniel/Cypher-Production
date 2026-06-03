@@ -5,6 +5,7 @@ import 'core/theme/cypher_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/system_provider.dart';
 import 'providers/file_provider.dart';
+import 'providers/notification_provider.dart';
 import 'services/api_service.dart';
 import 'services/storage_service.dart';
 import 'services/logging_service.dart';
@@ -22,6 +23,7 @@ Future<void> main() async {
 
   // 3. Initialize API Service
   final api = ApiService();
+  final socket = SocketService();
 
   // 4. Initialize Production Monitoring (GlitchTip - Sentry-compatible)
   await SentryFlutter.init(
@@ -44,9 +46,11 @@ Future<void> main() async {
           Provider.value(value: api),
           Provider.value(value: storage),
           Provider.value(value: logger),
+          ChangeNotifierProvider.value(value: socket),
           ChangeNotifierProvider(create: (_) => AuthProvider(api, storage)),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
           ChangeNotifierProxyProvider<AuthProvider, SystemProvider>(
-            create: (context) => SystemProvider(context.read<ApiService>()),
+            create: (context) => SystemProvider(context.read<ApiService>(), context.read<SocketService>()),
             update: (context, auth, previous) => previous!..fetchStatus(),
           ),
           ChangeNotifierProxyProvider<AuthProvider, FileProvider>(

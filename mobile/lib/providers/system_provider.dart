@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/socket_service.dart';
 
 class SystemProvider extends ChangeNotifier {
   final ApiService _api;
+  final SocketService _socket;
 
   Map<String, dynamic>? _stats;
   Map<String, dynamic>? get stats => _stats;
@@ -19,11 +21,30 @@ class SystemProvider extends ChangeNotifier {
 
   Timer? _statusTimer;
 
-  SystemProvider(this._api);
+  SystemProvider(this._api, this._socket);
 
-  void startMonitoring() {
+  void startMonitoring(String ip, String token, BuildContext context) {
+    _socket.connect(ip, token, onNotification: (notif) {
+      context.read<NotificationProvider>().addNotification(notif);
+      // Show snackbar or local notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${notif['app']}: ${notif['title']}'),
+          backgroundColor: CypherColors.primary,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }, onStats: (stats) {
+      _stats = stats;
+      _cpuHistory.add((stats['cpu_percent'] ?? 0.0).toDouble());
+      _ramHistory.add((stats['ram_percent'] ?? 0.0).toDouble());
+      if (_cpuHistory.length > 20) _cpuHistory.removeAt(0);
+      if (_ramHistory.length > 20) _ramHistory.removeAt(0);
+      notifyListeners();
+    });
+
     _statusTimer?.cancel();
-    _statusTimer = Timer.periodic(const Duration(seconds: 2), (_) => fetchStatus());
+    _statusTimer = Timer.periodic(const Duration(seconds: 10), (_) => fetchStatus());
     fetchStatus();
   }
 
