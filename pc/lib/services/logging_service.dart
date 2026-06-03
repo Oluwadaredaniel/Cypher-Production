@@ -35,7 +35,7 @@ class LoggingService {
           lineLength: 120,
           colors: true,
           printEmojis: true,
-          dateTimeFormat: DateTimeFormat.onlyTimeAndSinceAppStart,
+          dateTimeFormat: DateTimeFormat.onlyTime,
         ),
       );
     } catch (e) {

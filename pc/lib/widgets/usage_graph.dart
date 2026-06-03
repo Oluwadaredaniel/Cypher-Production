@@ -28,7 +28,7 @@ class UsageGraph extends StatelessWidget {
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
-            belowArea: BarAreaData(
+            belowBarData: BarAreaData(
               show: true,
               color: color.withOpacity(0.05),
             ),

@@ -5,7 +5,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../../core/constants/colors.dart';
-import '../../widgets/custom_card.dart';
 
 class GuestBrowserScreen extends StatefulWidget {
   final String baseUrl;

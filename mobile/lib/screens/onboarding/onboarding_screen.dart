@@ -59,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(
                             _pages[index].title,
                             style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28),
-                            textAlign: Center,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 16),

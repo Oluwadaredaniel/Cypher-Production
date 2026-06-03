@@ -215,25 +215,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  void _showUnpairDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: CypherColors.secondaryBackground,
-        title: const Text('Unpair Device?'),
-        content: const Text('This will remove the connection to your PC.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () {
-              context.read<AuthProvider>().unpair();
-              Navigator.pop(context);
-            },
-            child: const Text('Unpair', style: TextStyle(color: CypherColors.error)),
-          ),
-        ],
-      ),
-    );
-  }
 }

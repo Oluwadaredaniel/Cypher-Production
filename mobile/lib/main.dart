@@ -30,7 +30,7 @@ Future<void> main() async {
       options.environment = 'production';
       options.release = '1.0.0+1';
       options.tracesSampleRate = 0.1;
-      options.beforeSend = (event, hint) async {
+      options.beforeSend = (event, {hint}) {
         event.request?.headers?.remove('X-Auth-Token');
         return event;
       };

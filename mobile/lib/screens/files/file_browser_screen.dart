@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import '../../core/constants/colors.dart';
 import '../../providers/file_provider.dart';
 import '../../services/api_service.dart';
@@ -29,7 +27,7 @@ class _FileBrowserScreenState extends State<FileBrowserScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloading $name...')));
       final api = context.read<ApiService>();
       // Use manual HTTP for streaming/downloading large files if needed
-      final response = await api.get('/files/download', queryParams: {'path': path});
+      await api.get('/files/download', queryParams: {'path': path});
 
       final directory = await getExternalStorageDirectory();
       if (directory == null) return;

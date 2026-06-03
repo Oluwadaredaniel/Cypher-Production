@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import '../core/constants/colors.dart';
 
 class UsageGraph extends StatelessWidget {
   final List<double> values;
@@ -29,7 +28,7 @@ class UsageGraph extends StatelessWidget {
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: false),
-            belowArea: BarAreaData(
+            belowBarData: BarAreaData(
               show: true,
               color: color.withOpacity(0.1),
             ),

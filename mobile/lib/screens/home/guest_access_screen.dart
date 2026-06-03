@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
 import '../../core/constants/colors.dart';
 import '../../services/api_service.dart';
 import '../../widgets/custom_button.dart';
@@ -21,10 +20,6 @@ class _GuestAccessScreenState extends State<GuestAccessScreen> {
   String? _webLink;
   bool _isScanning = false;
   String _selectedFolderPath = 'Downloads (Default)';
-
-  Future<void> _pickFolder() async {
-    setState(() => _selectedFolderPath = 'C:\\Users\\hp\\Downloads');
-  }
 
   Future<void> _generateGuestLink() async {
     try {
