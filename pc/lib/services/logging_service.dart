@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 class LoggingService {
   static final LoggingService _instance = LoggingService._internal();
-  late Logger _logger;
+  Logger _logger = Logger();
   File? _logFile;
 
   factory LoggingService() {
