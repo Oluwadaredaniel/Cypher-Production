@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
 import '../core/constants/colors.dart';
 import '../providers/auth_provider.dart';
-import '../screens/home/home_screen.dart';
+import '../screens/navigation_wrapper.dart';
 import '../screens/onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (c, a1, a2) => const HomeScreen(),
+          pageBuilder: (c, a1, a2) => const NavigationWrapper(),
           transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 800),
         ),

@@ -4,6 +4,8 @@ import '../../core/constants/colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 
+import '../navigation_wrapper.dart';
+
 class PairingScreen extends StatefulWidget {
   final String? initialIp;
   const PairingScreen({super.key, this.initialIp});
@@ -28,10 +30,17 @@ class _PairingScreenState extends State<PairingScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await context.read<AuthProvider>().pair(
+      final success = await context.read<AuthProvider>().pair(
             _ipController.text.trim(),
             _codeController.text.trim(),
           );
+
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const NavigationWrapper()),
+          (route) => false,
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

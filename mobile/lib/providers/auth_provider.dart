@@ -47,6 +47,7 @@ class AuthProvider extends ChangeNotifier {
         _isPaired = true;
         _deviceName = name;
         notifyListeners();
+        return true; // Indicate success
       } else {
         throw Exception(response['error'] ?? 'Pairing failed');
       }

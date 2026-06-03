@@ -143,7 +143,7 @@ def _load_imaging():
 # --- APP INITIALIZATION ---
 app = Flask(__name__)
 CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # --- CONSTANTS & SECURITY ---
 INTERNAL_TOKEN = "cypher-internal-pc-app-token-2024"
@@ -689,7 +689,4 @@ if __name__ == '__main__':
     start_discovery_thread(5000, socket.gethostname())
 
     log.info(f"CYPHER Backend started on {get_local_ip()}:5000")
-    # Using eventlet for SocketIO
-    import eventlet
-    import eventlet.wsgi
-    eventlet.wsgi.server(eventlet.listen(('0.0.0.0', 5000)), app)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
