@@ -689,4 +689,5 @@ if __name__ == '__main__':
     start_discovery_thread(5000, socket.gethostname())
 
     log.info(f"CYPHER Backend started on {get_local_ip()}:5000")
-    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
+    # Use standard threading for production compatibility on Windows
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False, use_reloader=False, log_output=True)

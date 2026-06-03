@@ -1,7 +1,6 @@
 ﻿flask
 flask-cors
 flask-socketio
-eventlet
 psutil
 pyautogui
 pyperclip
@@ -19,3 +18,4 @@ screeninfo
 pytest
 pytest-flask
 sentry-sdk
+waitress
